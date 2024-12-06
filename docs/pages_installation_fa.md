@@ -1,117 +1,84 @@
-<h1 align="center">نصب از طریق Cloudflare Pages با Github</h1>
+# <h1 align="center">Installation via Cloudflare Pages with Upload</h1>
 
-## مقدمه
-احتمالاً میدونید که دو روش استفاده Worker و Pages برای ساخت پروکسی روی کلادفلر مورد استفاده قرار میگیره، نکته جالب توجه اینه که روش Worker که مرسوم‌تره یه محدودیت داره که روزانه اجازه ارسال بیشتر از صدهزار Request  به شما نمیده. البته این محدودیت برای مصرف ۲-۳ نفر کافیه . برای دور زدن این محدودیت در روش worker  یه دامنه به ورکر وصل میکردیم  و اینجوری نامحدود میشد (که ظاهرا باگ کلادفلر هست). اما Pages این محدودیت رو نداره (اخیرا بعضی موارد گزارش شده که این روش هم محدودیت خواهد داشت، خودتون تست کنید). البته چون ما در این روش از امکانی به اسم Pages functions استفاده میکنیم  کماکان مشابه Worker شما ایمیلی دریافت خواهید کرد که پر شدن ظرفیت مصرف 100k رو به شما اطلاع میده، در این روش حتی اگر از دامنه شخصی هم استفاده کنید باز این ایمیل رو دریافت می کنید. **ولی در نهایت تجربه نشون داده که سرویس شما قطع نخواهد شد.**
+## Introduction
+You probably know that there are two methods for using Workers and Pages to create a proxy on Cloudflare. The interesting point is that the Worker method, which is more common, has a limitation where it does not allow more than 100,000 requests per day. However, this limit is sufficient for 2-3 users. To bypass this limitation in the Worker method, we used to attach a domain to the Worker, which allowed for unlimited requests (this was apparently a bug in Cloudflare). However, Pages does not have this limitation (recently, some reports have suggested that this method may also have limitations, so you should test it yourself). Since we are using a feature called Pages Functions in this method, you will still receive an email notifying you that the 100k usage limit has been reached. Even if you use a custom domain, you will still receive this email. **But, experience has shown that your service will not be interrupted.**
 
-مزیت  مهم دیگه‌ش سهولت در یروزرسانی هست. وقتی کد پروژه به روز بشه شما هم به راحتی و بدون نیاز به طی مجدد مراحل میتونید پنلتون رو به روزرسانی کنید. توضیحات بیشتر در بخش [بروزرسانی](#بروز-رسانی) اومده.
+## Step 1 - Cloudflare Pages
+If you don’t have a Cloudflare account, create one [here](https://dash.cloudflare.com/sign-up) (you only need an email to register; due to Cloudflare’s security requirements, it’s recommended to use a reliable email like Gmail).
 
-ضمنا مراحل استفاده از Pages بسیار ساده‌تر است و به راحتی روی گوشی موبایلتون میتونید این کارها رو انجام بدید.<br><br>
+Download the Worker ZIP file [here](https://github.com/bia-pain-bache/BPB-Worker-Panel/releases/latest/download/worker.zip).
 
-## قدم اول - Github
-در سایت [Github](https://github.com/signup) یه اکانت میسازید ( برای ثبت نام فقط یک ایمیل لازم دارید، توصیه میکنم از ایمیل‌های Fake یا موقت استفاده نکنید). با مشخصات کاربریتون در گیتهاب لاگین میکنید.
-
-حالا به آدرس گیتهاب [BPB-Worker-Panel](https://github.com/bia-pain-bache/BPB-Worker-Panel) میرید و از اون بالا دکمه‌ی Fork رو میزنید.
-<br><br>
-<p align="center">
-  <img src="assets/images/Fork_repo.jpg">
-</p>
-
-تو صفحه‌ی بعدی به هیچی دست نزنید و Create Fork رو بزنید. خب کار ما با گیتهاب تموم شد.
-<br><br>
-
-## قدم دوم - Cloudflare Pages
-اگر اکانت کلود فلر ندارید از [اینجا](https://dash.cloudflare.com/sign-up) یک اکانت بسازید (اینجا هم فقط یک ایمیل برای ثبت نام لازم دارید).
-
-حالا در اکانت کلادفلرتون از منوی سمت چپ وارد قسمت `Workers and Pages` بشید (همونجا که ورکر میساختیم) و `Create Application` رو بزنید. با این تفاوت این دفعه `Pages` رو انتخاب میکنیم:
+Now, in your Cloudflare account, go to the left sidebar and enter the `Workers and Pages` section, click `Create Application`, and select `Pages`:
 
 <p align="center">
   <img src="assets/images/Pages_application.jpg">
 </p>
 
-اینجا `Connect to Git` رو میزنید و میرید مرحله بعد:
+Here, click `Upload assets` and proceed to the next step.
+Give your project a `Project Name` which will be the domain for your panel. Choose a name that doesn’t include "bpb" as it may cause Cloudflare to identify your account. Click `Create Project`. In this step, you need to upload the ZIP file you downloaded, so click `Select from computer`, choose `Upload zip`, and upload the file. Finally, click `Deploy site`, then `Continue to project`.
 
-<p align="center">
-  <img src="assets/images/Connect_to_git.jpg">
-</p>
-
-اینجا روی `BPB-Worker-Panel` کلیک کنید تا فعال بشه و `Begin Setup` رو بزنید. مرحله‌ی بعد یه `Project Name` داره که میشه دامین پنل شما، اونو حتما عوض کنید که کلمه‌ی bpb توش نباشه و یه اسم دلخواه بذارید وگرنه ممکنه اکانتتون توسط کلادفلر شناسایی بشه.
-
-دیگه الان میتونید `Save and Deploy` رو بزنید.
-یه چند ثانیه زمان میخواد تا پروژه نصب بشه، صبر کنید تا دکمه‌ی `Continue to Project` ظاهر بشه و بزنید و برید تو صفحه‌ی پروژه.
-خب پروژه‌ی شما ساخته شد ولی هنوز قابل استفاده نیست. از همین صفحه‌ی `Deployment` قسمت `Production` روی `visit` کلیک کنید، میبینید ارور داده که اول باید UUID و Trojan Password رو تنظیم کنید، یه لینک داره، داخل مرورگر بازش کنید  بذارید باشه برای مرحله بعد نیاز میشه.
+Your project has now been created, but it is still not usable. From this `Deployment` page, click `visit` under `Production`, and you will see an error saying you need to set the UUID and Trojan Password first. There is a link there, open it in your browser and leave it open for the next step.
 
 <p align="center">
   <img src="assets/images/Generate_secrets.jpg">
 </p>
 
-## قدم سوم - ساخت Cloudflare KV و تنظیم UUID و Trojan Password
-از منوی سمت چپ میریم به قسمت KV:
+## Step 3 - Create Cloudflare KV and Configure UUID and Trojan Password
+From the left menu, go to the `KV` section:
 
 <p align="center">
   <img src="assets/images/Nav_dash_kv.jpg">
 </p>
 
-روی `Create a namespace` کلیک میکنیم و یه اسم دلخواه بهش میدیم و Add میکنیم.
+Click `Create a namespace`, give it a name, and click Add.
 
-
-برگردید به قسمت `Workers and Pages` و وارد اون پروژه‌ی Pages بشید که ساختید، با توجه به عکس زیر برید قسمت `Settings`:
+Go back to the `Workers and Pages` section and enter the Pages project you created. Go to the `Settings` section as shown in the image below:
 
 <p align="center">
   <img src="assets/images/Settings_functions.jpg">
 </p>
 
-
-اینجا مثل ورکر تو صفحه قسمت `Bindings` رو پیدا کنید، `Add` بزنید و `KV Namespace` رو انتخاب کنید، `Variable name` باید حتما `bpb` باشه (همینجوری که نوشتم) و `KV namespace` اون KV رو انتخاب میکنید که مرحله دو ساختید و `save` میکنید.
+Here, similar to the Worker method, find the `Bindings` section, click `Add`, select `KV Namespace`, and for `Variable name`, enter `bpb` (exactly as written). For `KV namespace`, choose the KV you created in the previous step, and click `save`.
 
 <p align="center">
   <img src="assets/images/Pages_bind_kv.jpg">
 </p>
 
-خب کارمون با KV تموم شد.
+Now, we've completed the KV setup.
 
-تو همین قسمت `Settings` بخش `Variables and Secrets` رو میبینید، `Add variable` بزنید خونه اول `UUID` با حروف بزرگ، UUID رو هم میتونید از همون لینک مرحله قبل بگیرید و کپی کنید قسمت Value و `Save` کنید. یک بار دیگه `Add variable` بزنید خونه اول `TROJAN_PASS` با حروف بزرگ، پسورد Trojan رو هم میتونید از همون لینک مرحله قبل بگیرید و کپی کنید قسمت Value و `Save` کنید.
+In the same `Settings` section, you will see `Variables and Secrets`. Click `Add variable`, enter `UUID` in the first field in uppercase, then copy and paste the `UUID` value from the link you opened earlier and click `Save`. Do this again for `TROJAN_PASS` (in uppercase), and paste the Trojan password from the same link and click `Save`.
 
-از نوار بالا به قسمت `Deployment` برگردید و از بخش `Production` برید به `view details`:
+Now, click `Create deployment` at the top of the page and upload the ZIP file again, as you did before.
 
-<p align="center">
-  <img src="assets/images/Pages_production_details.jpg">
-</p>
+Now, you can go back to the `Deployments` page, and under `Production`, click `visit`. Add `panel/` at the end of the URL and enter the panel.
+Further setup guides and notes can be found in the [main guide](configuration_fa.md).
+The installation is complete, and the following sections may not be necessary for most users!
 
-حالا تو قسمت `Deployment detail` دکمه‌ی `Manage Deployment` رو بزنید و `Retry deployment`:
-
-<p align="center">
-  <img src="assets/images/Pages_retry_deployment.jpg">
-</p>
-
-چند ثانیه صبر میکنید تا مراحلش تموم شه و کار ما تموم شد!
-
-یه Back بزنید و از قسمت `Production` روی `visit site` بزنید، بعد یه `panel/` تهش اضافه کنید و وارد پنل بشید.
-آموزشهای تنظیمات و نکات هم که تو [آموزش اصلی](configuration_fa.md)  هست.
-نصب به پایان رسیده و توضیحاتی که در ادامه اومده شاید برای عموم لازم نباشه!
 <br><br>
-<h1 align="center">تنظیمات پیشرفته (اختیاری)</h1>
+<h1 align="center">Advanced Settings (Optional)</h1>
 
-## 2- ثابت کردن Proxy IP:
+## 1- Fixing Proxy IP:
 
-ما یه مشکلی داریم که این کد به صورت پیشفرض از تعداد زیادی IP Proxy استفاده میکنه که برای هر بار اتصال به سایتای پشت کلادفلر ( شامل بخش وسیعی از وب میشه) به صورت رندوم IP جدیدی انتخاب میکنه و در نتیجه به صورت متناوب IP شما تغییر پیدا میکنه. این تغییر IP شاید برای برخی مشکل ساز باشه (مخصوصا تریدرها). برای تغییر Proxy IP از ورژن 2.3.5 به بعد میتونید از طریق خود پنل انجام بدید، به این ترتیب که اعمال میکنید و ساب رو آپدیت میکنید و تمام. اما توصیه میکنم از روشی که در ادامه توضیح دادم استفاده کنید چون:
+We have an issue where, by default, this code uses a large number of Proxy IPs, selecting a new IP randomly each time it connects to websites behind Cloudflare (which includes a large portion of the web). As a result, your IP changes intermittently. This change in IP might be problematic for some users (especially traders). To fix the Proxy IP from version 2.3.5 onwards, you can configure it directly from the panel by applying it and updating the sub. However, I recommend using the method described below because:
 
 > [!CAUTION]
-> اگر از طریق پنل Proxy IP رو اعمال کنید و اون IP از کار بیافته، باید یه IP جایگزین کنید و ساب رو آپدیت کنید. معنیش اینه که اگر کانفیگ اهدا کرده باشید و Proxy IP رو تغییر بدید دیگه فایده‌ای نداره چون یوزر ساب نداره که کانفیگ رو آپدیت کنه. بنابراین توصیه میشه از این روش فقط برای مصرف شخصی استفاده کنید. اما خوبی روش دوم که در ادامه میگم اینه که از طریق داشبورد کلادفلر انجام میشه و نیازی به آپدیت کردن کانفیگ‌ها نداره.
+> If you apply a Proxy IP through the panel and that IP becomes inactive, you will need to replace it and update the sub. This means that if you’ve provided a config and change the Proxy IP, it won’t work anymore since the user does not have a sub to update the config. Therefore, it is recommended to use this method only for personal use. However, the benefit of the second method is that it’s done through the Cloudflare dashboard, and no config updates are required.
+
 <br><br>
 
-برای تغییر Proxy IP وقتی وارد پروژه میشد از قسمت `Settings` قسمت `Environment variables` رو باز میکنید:
+To change the Proxy IP, when you enter the project, go to `Settings` and open `Environment variables`:
 
 <p align="center">
   <img src="assets/images/Pages_env_vars.jpg">
 </p>
 
-اینجا باید مقادیر رو مشخص کنید. هر بار `Add` میزنید و یه کدوم رو وارد میکنید و `Save` میکنید:
+Here, you need to specify the values. Each time you click `Add`, enter a value and click `Save`:
 
 <p align="center">
   <img src="assets/images/Pages_add_variables.jpg">
-</p> 
+</p>
 
-حالا `Add variable` بزنید خونه اول `PROXYIP` با حروف بزرگ، IP رو هم میتونید از لینک‌ زیر بگیرید، اینا رو باز کنید یه تعدادی IP نشون میده که میتونید کشورشون رو هم چک کنید و یک یا چندتا انتخاب کنید:
+Now, click `Add variable`, enter `PROXYIP` in uppercase, and you can get the IPs from the link below. Open it, and it will show you a list of IPs, where you can also check their countries and choose one or more:
 
 >[Proxy IP](https://www.nslookup.io/domains/bpb.yousef.isegaro.com/dns-records/)
 
@@ -120,22 +87,18 @@
 </p>
 
 > [!TIP]
-> اگر خواستید چند Proxy IP داشته باشید میتونید با ویرگول وارد کنید، مثل `151.213.181.145`,`5.163.51.41`,`bpb.yousef.isegaro.com`
+> If you want to use multiple Proxy IPs, you can enter them separated by commas, like `151.213.181.145`, `5.163.51.41`, `bpb.yousef.isegaro.com`.
 
-از نوار بالا به قسمت `Deployment` برگردید و از بخش `Production` برید به `view details` و تو قسمت `Deployment detail` دکمه‌ی `Manage Deployment` رو بزنید و `Retry deployment`.
+Now, click `Create deployment` at the top of the page and upload the ZIP file again as you did before, and the changes will be applied.
+
 <br><br>
 
-## 4- اتصال دامنه به Pages:
+## 2- Connecting a Domain to Pages:
 
-برای این کار به داشبورد کلادفلر میرید و از قسمت `Workers and Pages`  پنل خودتون رو انتخاب میکنید. به قسمت `Custom domains` میرید و `set up a custom domain` رو میزنید. اینجا ازتون میخواد یه Domain وارد کنید (دقت کنید قبلا باید یه دامنه خریداری کرده باشید و روی همین اکانت فعال کرده باشید که اینجا جای آموزشش نیست). حالا فرض کنید یه دامنه دارید به اسم bpb.com، در قسمت Domain میتونید خود دامنه یا یک زیردامنه دلخواه بزنید. مثلا xyz.bpb.com، بعد هم `Continue` رو میزنید و در صفحه‌ی بعد هم `Activate domain`. کلادفلر خودش میره Pages رو به دامنه‌ی شما متصل میکنه (یه مدت طول میکشه تا این اتفاق بیافته، خود کلادفلر میگه ممکنه تا 48 ساعت طول بکشه). خب بعد از این مدت میتونید از آدرس `https://xyz.bpb.com/panel` وارد پنلتون بشید و ساب‌های جدید رو دریافت کنید.
+To do this, go to your Cloudflare dashboard, select your panel under `Workers and Pages`. Then, go to the `Custom domains` section and click `set up a custom domain`. It will ask you to enter a domain (note that you should have already purchased and activated a domain for this, which is not covered in this guide). Now, suppose you have a domain named `bpb.com`, you can enter either the domain itself or a subdomain, like `xyz.bpb.com`. Then, click `Continue` and on the next page, click `Activate domain`. Cloudflare will automatically connect the Pages service to your domain (it might take up to 48 hours for this to happen). After this time, you can access your panel via `https://xyz.bpb.com/panel` and manage new subs.
+
 <br><br>
 
-<h1 align="center">بروز‌رسانی پنل</h1>
+<h1 align="center">Panel Update</h1>
 
-یکی از مزیت‌های Pages نسبت به Worker اینه که وقتی آپدیتی برای کد منتشر میشه دیگه نیازی نیست برید ورژن جدید worker.js رو دانلود کنید و روز از نو روزی از نو! اصلا برای آپدیت دیگه کاری به کلادفلر ندارید. کافیه به گیتهاب خودتون برید وارد ریپازیتوری `BPB-Worker-Panel` بشید و از اینجا `Sync fork` رو بزنید:
-
-<p align="center">
-  <img src="assets/images/Sync_fork.jpg">
-</p>
-
-بعد `Update branch` رو میزنید و تمام. خوبیش اینه که با این کار Cloudflare Pages خودش متوجه میشه و در حدود ۱ دقیقه بعد خودبخود آپدیت میکنه براتون.
+To update the panel, just download the latest ZIP file [here](https://github.com/bia-pain-bache/BPB-Worker-Panel/releases/latest/download/worker.zip). Go to your Cloudflare account, enter the `Workers and Pages` section, and go to the Pages project you created. Click `Create deployment` at the top of the page and upload the new ZIP file as you did initially, and that's it.
